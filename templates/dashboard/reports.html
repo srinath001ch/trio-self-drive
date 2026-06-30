@@ -1,0 +1,108 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block content %}
+
+<div class="row g-4 mb-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon bg-green"><i class="bi bi-cash-stack"></i></div>
+      <div>
+        <div class="stat-value">₹{{ total_revenue|floatformat:0 }}</div>
+        <div class="stat-label">Total Revenue</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon bg-blue"><i class="bi bi-graph-up-arrow"></i></div>
+      <div>
+        <div class="stat-value">₹{{ month_revenue|floatformat:0 }}</div>
+        <div class="stat-label">This Month's Revenue</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon bg-amber"><i class="bi bi-calendar-month"></i></div>
+      <div>
+        <div class="stat-value">{{ monthly_bookings }}</div>
+        <div class="stat-label">Bookings This Month</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon bg-blue"><i class="bi bi-car-front-fill"></i></div>
+      <div>
+        <div class="stat-value">{{ total_cars }}</div>
+        <div class="stat-label">Total Cars</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="panel-card h-100">
+      <div class="panel-card-header">
+        <h5>Bookings by Status</h5>
+      </div>
+      <div class="d-flex flex-column gap-3">
+        {% for item in bookings_by_status %}
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="badge-status badge-{{ item.status }}">{{ item.status|title }}</span>
+            <strong>{{ item.count }} booking{{ item.count|pluralize }}</strong>
+          </div>
+        {% empty %}
+          <p class="text-muted text-center mb-0">No booking data yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="panel-card h-100">
+      <div class="panel-card-header">
+        <h5>Most Booked Cars</h5>
+      </div>
+      <div class="d-flex flex-column gap-3">
+        {% for car in top_cars %}
+          <div class="d-flex justify-content-between align-items-center">
+            <span>{{ car.car__brand }} {{ car.car__car_name }} <small class="text-muted">{{ car.car__model }}</small></span>
+            <strong class="price-tag">{{ car.booking_count }} booking{{ car.booking_count|pluralize }}</strong>
+          </div>
+        {% empty %}
+          <p class="text-muted text-center mb-0">No booking data yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel-card mt-4">
+  <div class="panel-card-header">
+    <h5>Overall Summary</h5>
+  </div>
+  <div class="row g-3 text-center">
+    <div class="col-md-4">
+      <div class="card-tsd p-4">
+        <div class="text-muted small mb-1">Total Bookings (All Time)</div>
+        <strong class="fs-3">{{ total_bookings }}</strong>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card-tsd p-4">
+        <div class="text-muted small mb-1">Total Revenue (All Time)</div>
+        <strong class="fs-3 price-tag">₹{{ total_revenue|floatformat:0 }}</strong>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card-tsd p-4">
+        <div class="text-muted small mb-1">Total Cars Listed</div>
+        <strong class="fs-3">{{ total_cars }}</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

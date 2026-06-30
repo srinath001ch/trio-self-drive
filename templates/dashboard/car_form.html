@@ -1,0 +1,100 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-lg-9">
+    <div class="panel-card">
+      <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size:0.8rem;">Car Information</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label">Brand <span class="required-asterisk">*</span></label>
+            {{ form.brand }}
+            {% if form.brand.errors %}<div class="text-danger small mt-1">{{ form.brand.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Car Name <span class="required-asterisk">*</span></label>
+            {{ form.car_name }}
+            {% if form.car_name.errors %}<div class="text-danger small mt-1">{{ form.car_name.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Model <span class="required-asterisk">*</span></label>
+            {{ form.model }}
+            {% if form.model.errors %}<div class="text-danger small mt-1">{{ form.model.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+
+        <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size:0.8rem;">Specifications</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-3">
+            <label class="form-label">Price Per Day (₹) <span class="required-asterisk">*</span></label>
+            {{ form.price_per_day }}
+            {% if form.price_per_day.errors %}<div class="text-danger small mt-1">{{ form.price_per_day.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Fuel Type <span class="required-asterisk">*</span></label>
+            {{ form.fuel_type }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Transmission <span class="required-asterisk">*</span></label>
+            {{ form.transmission }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Seats <span class="required-asterisk">*</span></label>
+            {{ form.seats }}
+            {% if form.seats.errors %}<div class="text-danger small mt-1">{{ form.seats.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Mileage <span class="required-asterisk">*</span></label>
+            {{ form.mileage }}
+            {% if form.mileage.errors %}<div class="text-danger small mt-1">{{ form.mileage.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-md-6 d-flex align-items-center">
+            <div class="form-check mt-4">
+              {{ form.is_available }}
+              <label class="form-check-label fw-semibold" for="id_is_available">
+                Available for booking
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size:0.8rem;">Description & Image</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <label class="form-label">Description <span class="required-asterisk">*</span></label>
+            {{ form.description }}
+            {% if form.description.errors %}<div class="text-danger small mt-1">{{ form.description.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Car Image {% if not car %}<span class="required-asterisk">*</span>{% endif %}</label>
+            {{ form.image }}
+            {% if form.image.errors %}<div class="text-danger small mt-1">{{ form.image.errors.0 }}</div>{% endif %}
+            <div class="form-text">Max size 5 MB. JPG or PNG recommended.</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Preview</label>
+            <div>
+              <img id="image-preview"
+                   src="{% if car.image %}{{ car.image.url }}{% endif %}"
+                   class="rounded-tsd"
+                   style="max-height:150px; {% if not car.image %}display:none;{% endif %} border:1px solid var(--tsd-border);">
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-primary btn-lg px-5">
+            <i class="bi bi-check-lg"></i> {% if car %}Update Car{% else %}Add Car{% endif %}
+          </button>
+          <a href="{% url 'dashboard:car_management' %}" class="btn btn-outline-secondary btn-lg px-4">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

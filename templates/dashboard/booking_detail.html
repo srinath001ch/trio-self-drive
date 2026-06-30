@@ -1,0 +1,111 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-lg-9">
+    <div class="panel-card mb-4">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+        <div>
+          <h4 class="mb-1">{{ booking.car.full_name }}</h4>
+          <span class="text-muted">Booking #{{ booking.pk }} &middot; Placed on {{ booking.created_at|date:"d M Y, h:i A" }}</span>
+        </div>
+        <span class="badge-status {{ booking.status_badge_class }} fs-6">{{ booking.get_status_display }}</span>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-md-4">
+          <img src="{{ booking.car.image.url }}" alt="{{ booking.car.full_name }}" class="rounded-tsd w-100" style="height:180px; object-fit:cover;">
+        </div>
+        <div class="col-md-8">
+          <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size:0.8rem;">Customer Information</h6>
+          <div class="row g-2">
+            <div class="col-md-6"><div class="text-muted small">Name</div><strong>{{ booking.customer_name }}</strong></div>
+            <div class="col-md-6"><div class="text-muted small">Phone</div><strong>{{ booking.phone_number }}</strong></div>
+            <div class="col-md-6"><div class="text-muted small">Email</div><strong>{{ booking.email|default:"—" }}</strong></div>
+            <div class="col-md-6">
+              <div class="text-muted small">Driving License</div>
+              <a href="{{ booking.driving_license.url }}" target="_blank" class="fw-semibold">
+                <i class="bi bi-file-earmark-image"></i> View License
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size:0.8rem;">Rental Period & Pricing</h6>
+      <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+          <div class="card-tsd p-3">
+            <div class="text-muted small">Pickup</div>
+            <strong>{{ booking.pickup_date }}</strong><br>
+            <span class="text-muted small">{{ booking.pickup_time }}</span>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="card-tsd p-3">
+            <div class="text-muted small">Return</div>
+            <strong>{{ booking.return_date }}</strong><br>
+            <span class="text-muted small">{{ booking.return_time }}</span>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="card-tsd p-3 bg-light-blue">
+            <div class="text-muted small">Total Days</div>
+            <strong class="fs-5">{{ booking.total_days }}</strong>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="card-tsd p-3 bg-light-blue">
+            <div class="text-muted small">Total Price</div>
+            <strong class="price-tag fs-5">₹{{ booking.total_price|floatformat:0 }}</strong>
+          </div>
+        </div>
+      </div>
+
+      {% if booking.admin_note %}
+        <div class="alert alert-info">
+          <strong>Admin Note:</strong> {{ booking.admin_note }}
+        </div>
+      {% endif %}
+    </div>
+
+    {% if booking.status == 'pending' %}
+      <div class="panel-card mb-4">
+        <h5 class="mb-3">Review This Booking</h5>
+        <form method="post" id="decisionForm">
+          {% csrf_token %}
+          <label class="form-label">Admin Note (Optional)</label>
+          {{ form.admin_note }}
+          <div class="d-flex gap-3 mt-3">
+            <button type="submit" formaction="{% url 'dashboard:booking_approve' booking.pk %}" class="btn btn-success btn-lg flex-fill">
+              <i class="bi bi-check-circle-fill"></i> Approve Booking
+            </button>
+            <button type="submit" formaction="{% url 'dashboard:booking_reject' booking.pk %}" class="btn btn-danger btn-lg flex-fill">
+              <i class="bi bi-x-circle-fill"></i> Reject Booking
+            </button>
+          </div>
+        </form>
+      </div>
+    {% elif booking.status == 'approved' %}
+      <div class="panel-card mb-4">
+        <h5 class="mb-3">Booking Actions</h5>
+        <form method="post" action="{% url 'dashboard:booking_complete' booking.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-flag-fill"></i> Mark as Completed
+          </button>
+        </form>
+      </div>
+    {% endif %}
+
+    <div class="d-flex gap-3">
+      <a href="{% url 'dashboard:booking_management' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Bookings</a>
+      <a href="{% url 'dashboard:booking_delete' booking.pk %}" class="btn btn-outline-danger"><i class="bi bi-trash"></i> Delete Booking</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

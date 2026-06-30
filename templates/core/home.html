@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="container position-relative" style="z-index:3;">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6">
+        <span class="hero-eyebrow"><i class="bi bi-shield-check"></i> Telangana's Trusted Self Drive Brand</span>
+        <h1>Drive Your Way with <span class="hero-accent">Trio Self Drive</span></h1>
+        <p class="lead">No drivers, no waiting, no compromise. Pick from our premium fleet, book in minutes, and hit the road on your own terms.</p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{% url 'cars:car_list' %}" class="btn btn-light btn-lg btn-pill fw-bold text-tsd-blue">
+            <i class="bi bi-search"></i> Browse Cars
+          </a>
+          <a href="tel:+91{{ BUSINESS_PHONE }}" class="btn btn-outline-light btn-lg btn-pill">
+            <i class="bi bi-telephone-fill"></i> {{ BUSINESS_PHONE_DISPLAY }}
+          </a>
+        </div>
+
+        <div class="hero-stats">
+          <div>
+            <div class="hero-stat-number">{{ total_cars }}+</div>
+            <div class="hero-stat-label">Cars Available</div>
+          </div>
+          <div>
+            <div class="hero-stat-number">24/7</div>
+            <div class="hero-stat-label">Customer Support</div>
+          </div>
+          <div>
+            <div class="hero-stat-number">100%</div>
+            <div class="hero-stat-label">Self Drive Freedom</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="hero-image-wrap">
+          <div class="hero-image-card">
+            <img src="https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=900&q=80" alt="Self drive rental car on the road">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-road"></div>
+</section>
+
+<!-- ===================== QUICK SEARCH CARD ===================== -->
+<div class="container">
+  <div class="hero-search-card">
+    <form action="{% url 'cars:car_list' %}" method="get" class="row g-3 align-items-end">
+      <div class="col-md-5">
+        <label class="form-label">Search by brand or model</label>
+        <input type="text" name="q" class="form-control form-control-lg" placeholder="e.g. Swift, Creta, Innova">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Transmission</label>
+        <select name="transmission" class="form-select form-select-lg">
+          <option value="">Any</option>
+          <option value="manual">Manual</option>
+          <option value="automatic">Automatic</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Fuel Type</label>
+        <select name="fuel_type" class="form-select form-select-lg">
+          <option value="">Any</option>
+          <option value="petrol">Petrol</option>
+          <option value="diesel">Diesel</option>
+          <option value="electric">Electric</option>
+          <option value="cng">CNG</option>
+          <option value="hybrid">Hybrid</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary btn-lg w-100"><i class="bi bi-search"></i> Search</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== FEATURED CARS ===================== -->
+<section class="section-pad">
+  <div class="container">
+    <div class="text-center mx-auto" style="max-width:680px;">
+      <span class="section-eyebrow"><i class="bi bi-stars"></i> Our Fleet</span>
+      <h2 class="section-heading">Featured Cars for Every Journey</h2>
+      <div class="road-divider mx-auto"></div>
+      <p class="section-subtext mx-auto">From compact hatchbacks to spacious SUVs, find the perfect ride for your trip.</p>
+    </div>
+
+    <div class="row g-4 mt-3">
+      {% for car in featured_cars %}
+        <div class="col-lg-4 col-md-6">
+          <div class="card-tsd">
+            <div class="car-card-img-wrap">
+              <img src="{{ car.image.url }}" alt="{{ car.full_name }}">
+              <span class="car-card-badge {% if not car.is_available %}unavailable{% endif %}">
+                {% if car.is_available %}Available{% else %}Unavailable{% endif %}
+              </span>
+              <div class="car-card-price">₹{{ car.price_per_day|floatformat:0 }} <small>/day</small></div>
+            </div>
+            <div class="car-card-body">
+              <div class="car-card-brand">{{ car.brand }}</div>
+              <h3 class="car-card-title">{{ car.car_name }} <small class="text-muted fs-6">{{ car.model }}</small></h3>
+              <div class="car-specs-row">
+                <span class="car-spec-pill"><i class="bi bi-fuel-pump"></i> {{ car.get_fuel_type_display }}</span>
+                <span class="car-spec-pill"><i class="bi bi-gear"></i> {{ car.get_transmission_display }}</span>
+                <span class="car-spec-pill"><i class="bi bi-people"></i> {{ car.seats }} Seats</span>
+              </div>
+              <a href="{% url 'cars:car_detail' car.pk %}" class="btn btn-primary w-100">View Details</a>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="empty-state">
+            <i class="bi bi-car-front"></i>
+            <h4>No cars available right now</h4>
+            <p class="text-muted">Please check back soon or contact us directly.</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if featured_cars %}
+      <div class="text-center mt-5">
+        <a href="{% url 'cars:car_list' %}" class="btn btn-outline-primary btn-lg btn-pill">
+          View All Cars <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ===================== WHY CHOOSE US ===================== -->
+<section class="section-pad bg-light-blue">
+  <div class="container">
+    <div class="text-center mx-auto" style="max-width:680px;">
+      <span class="section-eyebrow"><i class="bi bi-award"></i> Why Trio Self Drive</span>
+      <h2 class="section-heading">Built Around Your Freedom</h2>
+      <div class="road-divider mx-auto"></div>
+    </div>
+
+    <div class="row g-4 mt-3">
+      <div class="col-lg-3 col-md-6">
+        <div class="card-tsd feature-card">
+          <div class="feature-icon"><i class="bi bi-cash-coin"></i></div>
+          <h5>Transparent Pricing</h5>
+          <p class="text-muted mb-0">No hidden charges. The price you see is the price you pay.</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card-tsd feature-card">
+          <div class="feature-icon"><i class="bi bi-patch-check"></i></div>
+          <h5>Well-Maintained Fleet</h5>
+          <p class="text-muted mb-0">Every car is serviced regularly and inspected before every trip.</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card-tsd feature-card">
+          <div class="feature-icon"><i class="bi bi-clock-history"></i></div>
+          <h5>Quick Approval</h5>
+          <p class="text-muted mb-0">Submit your booking and get confirmation from our team fast.</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card-tsd feature-card">
+          <div class="feature-icon"><i class="bi bi-headset"></i></div>
+          <h5>24/7 Support</h5>
+          <p class="text-muted mb-0">Reach us anytime on call or WhatsApp for assistance on the road.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section class="section-pad">
+  <div class="container">
+    <div class="text-center mx-auto" style="max-width:680px;">
+      <span class="section-eyebrow"><i class="bi bi-signpost-2"></i> Simple Process</span>
+      <h2 class="section-heading">How It Works</h2>
+      <div class="road-divider mx-auto"></div>
+    </div>
+
+    <div class="row g-4 mt-3">
+      <div class="col-lg-3 col-md-6">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <h5>Choose Your Car</h5>
+          <p class="text-muted mb-0">Browse our fleet and pick the car that suits your trip and budget.</p>
+          <div class="step-connector"><i class="bi bi-arrow-right"></i></div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <h5>Submit Booking</h5>
+          <p class="text-muted mb-0">Fill in your details, upload your license, and pick your dates.</p>
+          <div class="step-connector"><i class="bi bi-arrow-right"></i></div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <h5>Get Approved</h5>
+          <p class="text-muted mb-0">Our team reviews and confirms your booking request quickly.</p>
+          <div class="step-connector"><i class="bi bi-arrow-right"></i></div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="step-card">
+          <div class="step-number">04</div>
+          <h5>Drive Away</h5>
+          <p class="text-muted mb-0">Pick up your car at the scheduled time and enjoy the journey.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if testimonials %}
+<!-- ===================== TESTIMONIALS ===================== -->
+<section class="section-pad bg-light-blue">
+  <div class="container">
+    <div class="text-center mx-auto" style="max-width:680px;">
+      <span class="section-eyebrow"><i class="bi bi-chat-quote"></i> Testimonials</span>
+      <h2 class="section-heading">What Our Customers Say</h2>
+      <div class="road-divider mx-auto"></div>
+    </div>
+
+    <div class="row g-4 mt-3">
+      {% for testimonial in testimonials %}
+        <div class="col-lg-4 col-md-6">
+          <div class="card-tsd testimonial-card">
+            <div class="testimonial-stars">
+              {% for i in "12345" %}
+                {% if forloop.counter <= testimonial.rating %}
+                  <i class="bi bi-star-fill"></i>
+                {% else %}
+                  <i class="bi bi-star"></i>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <p class="testimonial-quote">"{{ testimonial.comment }}"</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">{{ testimonial.customer_name|first|upper }}</div>
+              <div>
+                <strong>{{ testimonial.customer_name }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if faqs %}
+<!-- ===================== FAQ PREVIEW ===================== -->
+<section class="section-pad">
+  <div class="container">
+    <div class="text-center mx-auto" style="max-width:680px;">
+      <span class="section-eyebrow"><i class="bi bi-question-circle"></i> Got Questions?</span>
+      <h2 class="section-heading">Frequently Asked Questions</h2>
+      <div class="road-divider mx-auto"></div>
+    </div>
+
+    <div class="row justify-content-center mt-3">
+      <div class="col-lg-9">
+        <div class="accordion" id="faqAccordion">
+          {% for item in faqs %}
+            <div class="accordion-item border-0 mb-3 rounded-tsd shadow-tsd overflow-hidden">
+              <h2 class="accordion-header">
+                <button class="accordion-button {% if not forloop.first %}collapsed{% endif %} fw-semibold" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#faq{{ item.id }}">
+                  {{ item.question }}
+                </button>
+              </h2>
+              <div id="faq{{ item.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+                   data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                  {{ item.answer }}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+          <a href="{% url 'core:faq' %}" class="btn btn-outline-primary btn-pill">View All FAQs</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ===================== CTA BANNER ===================== -->
+<section class="section-pad" style="background: linear-gradient(120deg, var(--tsd-blue-darker), var(--tsd-blue-dark));">
+  <div class="container text-center text-white">
+    <h2 class="text-white section-heading">Ready to Hit the Road?</h2>
+    <p class="lead mx-auto" style="max-width:560px; color: rgba(255,255,255,0.85);">
+      Book your self drive car today and experience true freedom on every journey.
+    </p>
+    <div class="d-flex justify-content-center flex-wrap gap-3 mt-4">
+      <a href="{% url 'cars:car_list' %}" class="btn btn-light btn-lg btn-pill fw-bold text-tsd-blue">Browse Cars</a>
+      <a href="https://wa.me/{{ WHATSAPP_NUMBER }}" class="btn btn-outline-light btn-lg btn-pill" target="_blank" rel="noopener">
+        <i class="bi bi-whatsapp"></i> Chat on WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

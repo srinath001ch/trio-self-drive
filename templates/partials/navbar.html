@@ -1,0 +1,43 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg tsd-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'core:home' %}">
+      <span class="brand-icon"><i class="bi bi-car-front-fill"></i></span>
+      Trio Self Drive
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+            aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'core:home' %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'cars' in request.path %}active{% endif %}" href="{% url 'cars:car_list' %}">Cars</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'core:about' %}">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'booking_search' %}active{% endif %}" href="{% url 'bookings:booking_search' %}">My Bookings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'faq' %}active{% endif %}" href="{% url 'core:faq' %}">FAQ</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'core:contact' %}">Contact</a>
+        </li>
+      </ul>
+
+      <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+        <a href="tel:+91{{ BUSINESS_PHONE }}" class="nav-link btn-nav-phone d-none d-md-inline-flex align-items-center gap-2">
+          <i class="bi bi-telephone-fill"></i> {{ BUSINESS_PHONE_DISPLAY }}
+        </a>
+        <a href="{% url 'cars:car_list' %}" class="btn-nav-cta">Book Now</a>
+      </div>
+    </div>
+  </div>
+</nav>

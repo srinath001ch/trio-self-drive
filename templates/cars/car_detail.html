@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page-header">
+  <div class="container">
+    <h1>{{ car.full_name }}</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-tsd mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'cars:car_list' %}">Cars</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ car.car_name }}</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-7">
+        <div class="rounded-tsd overflow-hidden shadow-tsd mb-4">
+          <img src="{{ car.image.url }}" alt="{{ car.full_name }}" class="img-fluid w-100" style="max-height:480px; object-fit:cover;">
+        </div>
+
+        <h3 class="mb-3">Description</h3>
+        <p class="text-muted">{{ car.description|linebreaks }}</p>
+
+        <h3 class="mb-3 mt-4">Specifications</h3>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="card-tsd p-3 d-flex flex-row align-items-center gap-3">
+              <i class="bi bi-tag-fill text-tsd-blue fs-3"></i>
+              <div>
+                <div class="text-muted small">Brand</div>
+                <strong>{{ car.brand }}</strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card-tsd p-3 d-flex flex-row align-items-center gap-3">
+              <i class="bi bi-card-text text-tsd-blue fs-3"></i>
+              <div>
+                <div class="text-muted small">Model</div>
+                <strong>{{ car.model }}</strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card-tsd p-3 d-flex flex-row align-items-center gap-3">
+              <i class="bi bi-fuel-pump-fill text-tsd-blue fs-3"></i>
+              <div>
+                <div class="text-muted small">Fuel Type</div>
+                <strong>{{ car.get_fuel_type_display }}</strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card-tsd p-3 d-flex flex-row align-items-center gap-3">
+              <i class="bi bi-gear-fill text-tsd-blue fs-3"></i>
+              <div>
+                <div class="text-muted small">Transmission</div>
+                <strong>{{ car.get_transmission_display }}</strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card-tsd p-3 d-flex flex-row align-items-center gap-3">
+              <i class="bi bi-people-fill text-tsd-blue fs-3"></i>
+              <div>
+                <div class="text-muted small">Seating Capacity</div>
+                <strong>{{ car.seats }} Seats</strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card-tsd p-3 d-flex flex-row align-items-center gap-3">
+              <i class="bi bi-speedometer2 text-tsd-blue fs-3"></i>
+              <div>
+                <div class="text-muted small">Mileage</div>
+                <strong>{{ car.mileage }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="form-card sticky-top" style="top:100px;">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <div class="car-card-brand">{{ car.brand }}</div>
+              <h3 class="mb-0">{{ car.car_name }}</h3>
+              <span class="text-muted">{{ car.model }}</span>
+            </div>
+            {% if car.is_available %}
+              <span class="badge-status badge-approved"><i class="bi bi-check-circle-fill"></i> Available</span>
+            {% else %}
+              <span class="badge-status badge-rejected"><i class="bi bi-x-circle-fill"></i> Unavailable</span>
+            {% endif %}
+          </div>
+
+          <div class="d-flex align-items-baseline gap-2 mb-4">
+            <span class="price-tag fs-2">₹{{ car.price_per_day|floatformat:0 }}</span>
+            <span class="text-muted">/ day</span>
+          </div>
+
+          <ul class="list-unstyled d-flex flex-column gap-2 mb-4">
+            <li><i class="bi bi-check2 text-success me-2"></i> No driver required — drive yourself</li>
+            <li><i class="bi bi-check2 text-success me-2"></i> Well-maintained & regularly serviced</li>
+            <li><i class="bi bi-check2 text-success me-2"></i> Transparent pricing, no hidden fees</li>
+            <li><i class="bi bi-check2 text-success me-2"></i> Quick approval by our team</li>
+          </ul>
+
+          {% if car.is_available %}
+            <a href="{% url 'bookings:book_car' car.pk %}" class="btn btn-primary btn-lg w-100 mb-3">
+              <i class="bi bi-calendar-check"></i> Book This Car
+            </a>
+          {% else %}
+            <button class="btn btn-secondary btn-lg w-100 mb-3" disabled>Currently Unavailable</button>
+          {% endif %}
+
+          <a href="https://wa.me/{{ WHATSAPP_NUMBER }}?text=Hi%2C%20I%27m%20interested%20in%20the%20{{ car.brand|urlencode }}%20{{ car.car_name|urlencode }}."
+             target="_blank" rel="noopener" class="btn btn-outline-primary btn-lg w-100">
+            <i class="bi bi-whatsapp"></i> Ask on WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {% if related_cars %}
+      <div class="mt-5 pt-4">
+        <h3 class="mb-4">More from {{ car.brand }}</h3>
+        <div class="row g-4">
+          {% for related in related_cars %}
+            <div class="col-lg-4 col-md-6">
+              <div class="card-tsd">
+                <div class="car-card-img-wrap">
+                  <img src="{{ related.image.url }}" alt="{{ related.full_name }}">
+                  <div class="car-card-price">₹{{ related.price_per_day|floatformat:0 }} <small>/day</small></div>
+                </div>
+                <div class="car-card-body">
+                  <div class="car-card-brand">{{ related.brand }}</div>
+                  <h3 class="car-card-title">{{ related.car_name }}</h3>
+                  <a href="{% url 'cars:car_detail' related.pk %}" class="btn btn-outline-primary w-100">View Details</a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

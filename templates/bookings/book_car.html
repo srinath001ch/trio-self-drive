@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page-header">
+  <div class="container">
+    <h1>Book {{ car.full_name }}</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-tsd mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'cars:car_list' %}">Cars</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'cars:car_detail' car.pk %}">{{ car.car_name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Book Now</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-4 order-lg-2">
+        <div class="card-tsd p-3 sticky-top" style="top:100px;">
+          <img src="{{ car.image.url }}" alt="{{ car.full_name }}" class="rounded-tsd w-100 mb-3" style="height:180px; object-fit:cover;">
+          <div class="car-card-brand">{{ car.brand }}</div>
+          <h4>{{ car.car_name }} <small class="text-muted fs-6">{{ car.model }}</small></h4>
+          <div class="car-specs-row mb-3">
+            <span class="car-spec-pill"><i class="bi bi-fuel-pump"></i> {{ car.get_fuel_type_display }}</span>
+            <span class="car-spec-pill"><i class="bi bi-gear"></i> {{ car.get_transmission_display }}</span>
+            <span class="car-spec-pill"><i class="bi bi-people"></i> {{ car.seats }} Seats</span>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">Price per day</span>
+            <strong>₹{{ car.price_per_day|floatformat:0 }}</strong>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">Estimated days</span>
+            <strong id="estimatedDays">—</strong>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between">
+            <span class="fw-bold">Estimated Total</span>
+            <strong class="price-tag fs-5" id="estimatedTotal">₹0</strong>
+          </div>
+          <p class="text-muted small mt-3 mb-0">
+            <i class="bi bi-info-circle"></i> Final total is calculated automatically and confirmed once your booking is approved.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-8 order-lg-1">
+        <div class="form-card">
+          <h3 class="mb-4">Booking Details</h3>
+          <form method="post" enctype="multipart/form-data" novalidate id="bookingForm">
+            {% csrf_token %}
+
+            <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size:0.8rem; letter-spacing:0.05em;">Your Information</h6>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label">Full Name <span class="required-asterisk">*</span></label>
+                {{ form.customer_name }}
+                {% if form.customer_name.errors %}<div class="text-danger small mt-1">{{ form.customer_name.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone Number <span class="required-asterisk">*</span></label>
+                {{ form.phone_number }}
+                {% if form.phone_number.errors %}<div class="text-danger small mt-1">{{ form.phone_number.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email (Optional)</label>
+                {{ form.email }}
+                {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Driving License <span class="required-asterisk">*</span></label>
+                {{ form.driving_license }}
+                {% if form.driving_license.errors %}<div class="text-danger small mt-1">{{ form.driving_license.errors.0 }}</div>{% endif %}
+                <div class="form-text">Upload a clear photo or scan (max 5 MB).</div>
+              </div>
+            </div>
+
+            <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size:0.8rem; letter-spacing:0.05em;">Rental Period</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Pickup Date <span class="required-asterisk">*</span></label>
+                {{ form.pickup_date }}
+                {% if form.pickup_date.errors %}<div class="text-danger small mt-1">{{ form.pickup_date.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Pickup Time <span class="required-asterisk">*</span></label>
+                {{ form.pickup_time }}
+                {% if form.pickup_time.errors %}<div class="text-danger small mt-1">{{ form.pickup_time.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Return Date <span class="required-asterisk">*</span></label>
+                {{ form.return_date }}
+                {% if form.return_date.errors %}<div class="text-danger small mt-1">{{ form.return_date.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Return Time <span class="required-asterisk">*</span></label>
+                {{ form.return_time }}
+                {% if form.return_time.errors %}<div class="text-danger small mt-1">{{ form.return_time.errors.0 }}</div>{% endif %}
+              </div>
+            </div>
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger mt-4">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ form.non_field_errors.0 }}
+              </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">
+              <i class="bi bi-calendar-check"></i> Submit Booking Request
+            </button>
+            <p class="text-muted small text-center mt-3 mb-0">
+              By submitting, you agree to our booking terms. No payment is required online — payment is handled directly at pickup.
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    var pricePerDay = {{ car.price_per_day }};
+    var pickupDate = document.getElementById('id_pickup_date');
+    var pickupTime = document.getElementById('id_pickup_time');
+    var returnDate = document.getElementById('id_return_date');
+    var returnTime = document.getElementById('id_return_time');
+    var estimatedDaysEl = document.getElementById('estimatedDays');
+    var estimatedTotalEl = document.getElementById('estimatedTotal');
+
+    function calculate() {
+      if (!pickupDate.value || !pickupTime.value || !returnDate.value || !returnTime.value) {
+        estimatedDaysEl.textContent = '—';
+        estimatedTotalEl.textContent = '₹0';
+        return;
+      }
+      var pickupDt = new Date(pickupDate.value + 'T' + pickupTime.value);
+      var returnDt = new Date(returnDate.value + 'T' + returnTime.value);
+      var diffMs = returnDt - pickupDt;
+
+      if (diffMs <= 0) {
+        estimatedDaysEl.textContent = '—';
+        estimatedTotalEl.textContent = '₹0';
+        return;
+      }
+
+      var diffHours = diffMs / (1000 * 60 * 60);
+      var days = Math.floor(diffHours / 24);
+      var remainderHours = diffHours % 24;
+      if (remainderHours > 0) {
+        days += 1;
+      }
+      if (days < 1) days = 1;
+
+      var total = days * pricePerDay;
+      estimatedDaysEl.textContent = days + (days === 1 ? ' day' : ' days');
+      estimatedTotalEl.textContent = '₹' + total.toLocaleString('en-IN');
+    }
+
+    [pickupDate, pickupTime, returnDate, returnTime].forEach(function (el) {
+      if (el) el.addEventListener('change', calculate);
+    });
+
+    calculate();
+  })();
+</script>
+{% endblock %}

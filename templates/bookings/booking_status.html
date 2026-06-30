@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page-header">
+  <div class="container">
+    <h1>Booking #{{ booking.pk }}</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-tsd mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'bookings:booking_search' %}">My Bookings</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Booking #{{ booking.pk }}</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="form-card">
+          <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
+            <div>
+              <h3 class="mb-1">{{ booking.car.full_name }}</h3>
+              <span class="text-muted">Booking placed on {{ booking.created_at|date:"d M Y, h:i A" }}</span>
+            </div>
+            <span class="badge-status {{ booking.status_badge_class }} fs-6">
+              {% if booking.status == 'pending' %}<i class="bi bi-hourglass-split"></i>{% endif %}
+              {% if booking.status == 'approved' %}<i class="bi bi-check-circle-fill"></i>{% endif %}
+              {% if booking.status == 'rejected' %}<i class="bi bi-x-circle-fill"></i>{% endif %}
+              {% if booking.status == 'cancelled' %}<i class="bi bi-slash-circle-fill"></i>{% endif %}
+              {% if booking.status == 'completed' %}<i class="bi bi-flag-fill"></i>{% endif %}
+              {{ booking.get_status_display }}
+            </span>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-md-5">
+              <img src="{{ booking.car.image.url }}" alt="{{ booking.car.full_name }}" class="img-fluid rounded-tsd w-100" style="max-height:220px; object-fit:cover;">
+            </div>
+            <div class="col-md-7">
+              <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size:0.8rem;">Customer Details</h6>
+              <div class="row g-2 mb-3">
+                <div class="col-6"><div class="text-muted small">Name</div><strong>{{ booking.customer_name }}</strong></div>
+                <div class="col-6"><div class="text-muted small">Phone</div><strong>{{ booking.phone_number }}</strong></div>
+                {% if booking.email %}
+                <div class="col-12"><div class="text-muted small">Email</div><strong>{{ booking.email }}</strong></div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size:0.8rem;">Rental Period</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+              <div class="card-tsd p-3">
+                <div class="text-muted small">Pickup Date</div>
+                <strong>{{ booking.pickup_date }}</strong>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="card-tsd p-3">
+                <div class="text-muted small">Pickup Time</div>
+                <strong>{{ booking.pickup_time }}</strong>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="card-tsd p-3">
+                <div class="text-muted small">Return Date</div>
+                <strong>{{ booking.return_date }}</strong>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="card-tsd p-3">
+                <div class="text-muted small">Return Time</div>
+                <strong>{{ booking.return_time }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="card-tsd p-3 bg-light-blue">
+                <div class="text-muted small">Total Days</div>
+                <strong class="fs-5">{{ booking.total_days }} day{{ booking.total_days|pluralize }}</strong>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card-tsd p-3 bg-light-blue">
+                <div class="text-muted small">Total Price</div>
+                <strong class="price-tag fs-5">₹{{ booking.total_price|floatformat:0 }}</strong>
+              </div>
+            </div>
+          </div>
+
+          {% if booking.status == 'rejected' and booking.admin_note %}
+            <div class="alert alert-danger">
+              <strong>Reason:</strong> {{ booking.admin_note }}
+            </div>
+          {% endif %}
+
+          {% if booking.status == 'pending' %}
+            <div class="alert alert-warning">
+              <i class="bi bi-info-circle"></i> Your booking is awaiting approval from our team. We'll contact you on {{ booking.phone_number }} shortly.
+            </div>
+          {% endif %}
+
+          {% if booking.status == 'approved' %}
+            <div class="alert alert-success">
+              <i class="bi bi-check-circle"></i> Your booking has been approved! Please arrive on time for pickup with your original driving license.
+            </div>
+          {% endif %}
+
+          <div class="d-flex flex-wrap gap-3 mt-4">
+            {% if booking.can_be_cancelled %}
+              <a href="{% url 'bookings:booking_cancel' booking.pk %}" class="btn btn-outline-danger btn-pill">
+                <i class="bi bi-x-circle"></i> Cancel Booking
+              </a>
+            {% endif %}
+            <a href="{% url 'bookings:booking_search' %}" class="btn btn-outline-primary btn-pill">
+              <i class="bi bi-arrow-left"></i> Back to My Bookings
+            </a>
+            <a href="https://wa.me/{{ WHATSAPP_NUMBER }}?text=Hi%2C%20I%20have%20a%20question%20about%20my%20booking%20%23{{ booking.pk }}."
+               target="_blank" rel="noopener" class="btn btn-primary btn-pill">
+              <i class="bi bi-whatsapp"></i> Contact Support
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

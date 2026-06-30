@@ -1,0 +1,106 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block content %}
+
+<div class="panel-card mb-4">
+  <form method="get" class="row g-3 align-items-end">
+    <div class="col-md-5">
+      <label class="form-label">Search</label>
+      <input type="text" name="q" class="form-control" placeholder="Brand, name or model..." value="{{ query }}">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Availability</label>
+      <select name="availability" class="form-select auto-submit-select">
+        <option value="">All</option>
+        <option value="available" {% if selected_availability == "available" %}selected{% endif %}>Available</option>
+        <option value="unavailable" {% if selected_availability == "unavailable" %}selected{% endif %}>Unavailable</option>
+      </select>
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+      <button type="submit" class="btn btn-primary flex-fill"><i class="bi bi-search"></i> Search</button>
+      <a href="{% url 'dashboard:car_add' %}" class="btn btn-success flex-fill"><i class="bi bi-plus-lg"></i> Add Car</a>
+    </div>
+  </form>
+</div>
+
+<div class="panel-card">
+  <div class="panel-card-header">
+    <h5>All Cars ({{ page_obj.paginator.count }})</h5>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-tsd align-middle">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Car</th>
+          <th>Price/Day</th>
+          <th>Fuel</th>
+          <th>Transmission</th>
+          <th>Seats</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for car in cars %}
+          <tr>
+            <td><img src="{{ car.image.url }}" alt="{{ car.full_name }}" class="car-thumb-sm"></td>
+            <td>
+              <strong>{{ car.brand }} {{ car.car_name }}</strong><br>
+              <span class="text-muted small">{{ car.model }}</span>
+            </td>
+            <td class="price-tag">₹{{ car.price_per_day|floatformat:0 }}</td>
+            <td>{{ car.get_fuel_type_display }}</td>
+            <td>{{ car.get_transmission_display }}</td>
+            <td>{{ car.seats }}</td>
+            <td>
+              {% if car.is_available %}
+                <span class="badge-status badge-approved">Available</span>
+              {% else %}
+                <span class="badge-status badge-rejected">Unavailable</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="d-flex gap-2">
+                <a href="{% url 'cars:car_detail' car.pk %}" target="_blank" class="action-icon-btn" title="View on site">
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+                <a href="{% url 'dashboard:car_edit' car.pk %}" class="action-icon-btn" title="Edit">
+                  <i class="bi bi-pencil-fill"></i>
+                </a>
+                <a href="{% url 'dashboard:car_delete' car.pk %}" class="action-icon-btn danger" title="Delete">
+                  <i class="bi bi-trash-fill"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="8" class="text-center text-muted py-4">No cars found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="mt-3" aria-label="Car pagination">
+      <ul class="pagination justify-content-center mb-0">
+        {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+          <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+          </li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+</div>
+
+{% endblock %}

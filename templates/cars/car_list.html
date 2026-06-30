@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page-header">
+  <div class="container">
+    <h1>Our Cars</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-tsd mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Cars</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="container">
+
+    <!-- Filters -->
+    <form method="get" class="form-card mb-5">
+      <div class="row g-3 align-items-end">
+        <div class="col-lg-4 col-md-6">
+          <label class="form-label">Search</label>
+          <input type="text" name="q" class="form-control" placeholder="Brand or model name..." value="{{ query }}">
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <label class="form-label">Fuel Type</label>
+          <select name="fuel_type" class="form-select auto-submit-select">
+            <option value="">All Fuel Types</option>
+            {% for value, label in fuel_type_choices %}
+              <option value="{{ value }}" {% if selected_fuel_type == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <label class="form-label">Transmission</label>
+          <select name="transmission" class="form-select auto-submit-select">
+            <option value="">All Transmissions</option>
+            {% for value, label in transmission_choices %}
+              <option value="{{ value }}" {% if selected_transmission == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <label class="form-label">Sort By</label>
+          <select name="sort" class="form-select auto-submit-select">
+            <option value="" {% if selected_sort == "" %}selected{% endif %}>Newest First</option>
+            <option value="price_low" {% if selected_sort == "price_low" %}selected{% endif %}>Price: Low to High</option>
+            <option value="price_high" {% if selected_sort == "price_high" %}selected{% endif %}>Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+    </form>
+
+    <!-- Result count -->
+    <p class="text-muted mb-4">Showing {{ page_obj.paginator.count }} car{{ page_obj.paginator.count|pluralize }} available</p>
+
+    <div class="row g-4">
+      {% for car in cars %}
+        <div class="col-lg-4 col-md-6">
+          <div class="card-tsd">
+            <div class="car-card-img-wrap">
+              <img src="{{ car.image.url }}" alt="{{ car.full_name }}">
+              <span class="car-card-badge">Available</span>
+              <div class="car-card-price">₹{{ car.price_per_day|floatformat:0 }} <small>/day</small></div>
+            </div>
+            <div class="car-card-body">
+              <div class="car-card-brand">{{ car.brand }}</div>
+              <h3 class="car-card-title">{{ car.car_name }} <small class="text-muted fs-6">{{ car.model }}</small></h3>
+              <div class="car-specs-row">
+                <span class="car-spec-pill"><i class="bi bi-fuel-pump"></i> {{ car.get_fuel_type_display }}</span>
+                <span class="car-spec-pill"><i class="bi bi-gear"></i> {{ car.get_transmission_display }}</span>
+                <span class="car-spec-pill"><i class="bi bi-people"></i> {{ car.seats }} Seats</span>
+                <span class="car-spec-pill"><i class="bi bi-speedometer2"></i> {{ car.mileage }}</span>
+              </div>
+              <div class="d-flex gap-2">
+                <a href="{% url 'cars:car_detail' car.pk %}" class="btn btn-outline-primary flex-fill">Details</a>
+                <a href="{% url 'bookings:book_car' car.pk %}" class="btn btn-primary flex-fill">Book Now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="empty-state">
+            <i class="bi bi-car-front"></i>
+            <h4>No cars match your search</h4>
+            <p class="text-muted">Try adjusting your filters or search terms.</p>
+            <a href="{% url 'cars:car_list' %}" class="btn btn-primary btn-pill mt-2">Clear Filters</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+      <nav class="mt-5" aria-label="Car pagination">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_fuel_type %}&fuel_type={{ selected_fuel_type }}{% endif %}{% if selected_transmission %}&transmission={{ selected_transmission }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">Previous</a>
+            </li>
+          {% endif %}
+          {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+              <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if selected_fuel_type %}&fuel_type={{ selected_fuel_type }}{% endif %}{% if selected_transmission %}&transmission={{ selected_transmission }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">{{ num }}</a>
+            </li>
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_fuel_type %}&fuel_type={{ selected_fuel_type }}{% endif %}{% if selected_transmission %}&transmission={{ selected_transmission }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">Next</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}

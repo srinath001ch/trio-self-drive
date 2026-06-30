@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page-header">
+  <div class="container">
+    <h1>Contact Us</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-tsd mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Contact</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row g-4 mb-5">
+      <div class="col-md-4">
+        <div class="card-tsd p-4 text-center h-100">
+          <i class="bi bi-telephone-fill text-tsd-blue fs-1 mb-3"></i>
+          <h5>Call Us</h5>
+          <p class="text-muted mb-2">Available 24/7 for bookings</p>
+          <a href="tel:+91{{ BUSINESS_PHONE }}" class="fw-bold text-tsd-blue fs-5">{{ BUSINESS_PHONE_DISPLAY }}</a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-tsd p-4 text-center h-100">
+          <i class="bi bi-whatsapp text-tsd-blue fs-1 mb-3"></i>
+          <h5>WhatsApp</h5>
+          <p class="text-muted mb-2">Quick replies on chat</p>
+          <a href="https://wa.me/{{ WHATSAPP_NUMBER }}" target="_blank" rel="noopener" class="fw-bold text-tsd-blue fs-5">Chat Now</a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-tsd p-4 text-center h-100">
+          <i class="bi bi-geo-alt-fill text-tsd-blue fs-1 mb-3"></i>
+          <h5>Visit Us</h5>
+          <p class="text-muted mb-2">{{ BUSINESS_ADDRESS }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="form-card">
+          <div class="text-center mb-4">
+            <span class="section-eyebrow"><i class="bi bi-envelope"></i> Get In Touch</span>
+            <h2 class="section-heading">Send Us a Message</h2>
+          </div>
+
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Full Name <span class="required-asterisk">*</span></label>
+                {{ form.name }}
+                {% if form.name.errors %}<div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone Number <span class="required-asterisk">*</span></label>
+                {{ form.phone_number }}
+                {% if form.phone_number.errors %}<div class="text-danger small mt-1">{{ form.phone_number.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email (Optional)</label>
+                {{ form.email }}
+                {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Subject <span class="required-asterisk">*</span></label>
+                {{ form.subject }}
+                {% if form.subject.errors %}<div class="text-danger small mt-1">{{ form.subject.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-12">
+                <label class="form-label">Message <span class="required-asterisk">*</span></label>
+                {{ form.message }}
+                {% if form.message.errors %}<div class="text-danger small mt-1">{{ form.message.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-12 text-center mt-2">
+                <button type="submit" class="btn btn-primary btn-lg btn-pill px-5">
+                  <i class="bi bi-send-fill"></i> Send Message
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

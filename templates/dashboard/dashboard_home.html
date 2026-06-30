@@ -1,0 +1,130 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block content %}
+
+<div class="row g-4 mb-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon bg-blue"><i class="bi bi-car-front-fill"></i></div>
+      <div>
+        <div class="stat-value">{{ total_cars }}</div>
+        <div class="stat-label">Total Cars</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon bg-green"><i class="bi bi-check-circle-fill"></i></div>
+      <div>
+        <div class="stat-value">{{ available_cars }}</div>
+        <div class="stat-label">Available Cars</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon bg-blue"><i class="bi bi-calendar-check-fill"></i></div>
+      <div>
+        <div class="stat-value">{{ total_bookings }}</div>
+        <div class="stat-label">Total Bookings</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon bg-amber"><i class="bi bi-calendar-day-fill"></i></div>
+      <div>
+        <div class="stat-value">{{ today_bookings }}</div>
+        <div class="stat-label">Today's Bookings</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon bg-amber"><i class="bi bi-hourglass-split"></i></div>
+      <div>
+        <div class="stat-value">{{ pending_bookings }}</div>
+        <div class="stat-label">Pending Bookings</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon bg-green"><i class="bi bi-patch-check-fill"></i></div>
+      <div>
+        <div class="stat-value">{{ approved_bookings }}</div>
+        <div class="stat-label">Approved Bookings</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon bg-red"><i class="bi bi-x-circle-fill"></i></div>
+      <div>
+        <div class="stat-value">{{ rejected_bookings }}</div>
+        <div class="stat-label">Rejected Bookings</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon bg-slate"><i class="bi bi-slash-circle-fill"></i></div>
+      <div>
+        <div class="stat-value">{{ cancelled_bookings }}</div>
+        <div class="stat-label">Cancelled Bookings</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel-card">
+  <div class="panel-card-header">
+    <h5>Recent Bookings</h5>
+    <a href="{% url 'dashboard:booking_management' %}" class="btn btn-sm btn-outline-primary">View All</a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-tsd align-middle">
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Car</th>
+          <th>Pickup</th>
+          <th>Return</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in recent_bookings %}
+          <tr>
+            <td>
+              <strong>{{ booking.customer_name }}</strong><br>
+              <span class="text-muted small">{{ booking.phone_number }}</span>
+            </td>
+            <td>{{ booking.car.full_name }}</td>
+            <td>{{ booking.pickup_date }}</td>
+            <td>{{ booking.return_date }}</td>
+            <td class="price-tag">₹{{ booking.total_price|floatformat:0 }}</td>
+            <td><span class="badge-status {{ booking.status_badge_class }}">{{ booking.get_status_display }}</span></td>
+            <td>
+              <a href="{% url 'dashboard:booking_detail' booking.pk %}" class="action-icon-btn">
+                <i class="bi bi-eye"></i>
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="text-center text-muted py-4">No bookings yet.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page-header">
+  <div class="container">
+    <h1>Frequently Asked Questions</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-tsd mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">FAQ</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        {% if faqs %}
+          <div class="accordion" id="faqAccordionFull">
+            {% for item in faqs %}
+              <div class="accordion-item border-0 mb-3 rounded-tsd shadow-tsd overflow-hidden">
+                <h2 class="accordion-header">
+                  <button class="accordion-button {% if not forloop.first %}collapsed{% endif %} fw-semibold" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#faqFull{{ item.id }}">
+                    {{ item.question }}
+                  </button>
+                </h2>
+                <div id="faqFull{{ item.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+                     data-bs-parent="#faqAccordionFull">
+                  <div class="accordion-body text-muted">
+                    {{ item.answer }}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <i class="bi bi-question-circle"></i>
+            <h4>No FAQs added yet</h4>
+            <p class="text-muted">Have a question? Reach out to us directly.</p>
+            <a href="{% url 'core:contact' %}" class="btn btn-primary btn-pill mt-2">Contact Us</a>
+          </div>
+        {% endif %}
+
+        <div class="text-center mt-5">
+          <p class="text-muted">Still have questions?</p>
+          <a href="https://wa.me/{{ WHATSAPP_NUMBER }}" target="_blank" rel="noopener" class="btn btn-primary btn-pill">
+            <i class="bi bi-whatsapp"></i> Chat with Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

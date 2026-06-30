@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page-header">
+  <div class="container">
+    <h1>My Bookings</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-tsd mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">My Bookings</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row justify-content-center mb-5">
+      <div class="col-lg-7">
+        <div class="form-card">
+          <div class="text-center mb-4">
+            <i class="bi bi-search text-tsd-blue fs-1 mb-2"></i>
+            <h3>Find Your Bookings</h3>
+            <p class="text-muted">Enter the phone number you used while booking to check your status.</p>
+          </div>
+          <form method="get" class="d-flex flex-column flex-md-row gap-2">
+            {{ form.phone_number }}
+            <button type="submit" class="btn btn-primary btn-lg px-4">
+              <i class="bi bi-search"></i> Search
+            </button>
+          </form>
+          {% if form.phone_number.errors %}
+            <div class="text-danger small mt-2">{{ form.phone_number.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% if searched %}
+      {% if bookings %}
+        <h4 class="mb-4">Found {{ bookings.count }} booking{{ bookings.count|pluralize }}</h4>
+        <div class="row g-4">
+          {% for booking in bookings %}
+            <div class="col-lg-6">
+              <div class="card-tsd p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div>
+                    <h5 class="mb-1">{{ booking.car.full_name }}</h5>
+                    <span class="text-muted small">Booking #{{ booking.pk }}</span>
+                  </div>
+                  <span class="badge-status {{ booking.status_badge_class }}">{{ booking.get_status_display }}</span>
+                </div>
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <div class="text-muted small">Pickup</div>
+                    <strong>{{ booking.pickup_date }}</strong>
+                  </div>
+                  <div class="col-6">
+                    <div class="text-muted small">Return</div>
+                    <strong>{{ booking.return_date }}</strong>
+                  </div>
+                  <div class="col-6">
+                    <div class="text-muted small">Total Days</div>
+                    <strong>{{ booking.total_days }}</strong>
+                  </div>
+                  <div class="col-6">
+                    <div class="text-muted small">Total Price</div>
+                    <strong class="price-tag">₹{{ booking.total_price|floatformat:0 }}</strong>
+                  </div>
+                </div>
+                <a href="{% url 'bookings:booking_status' booking.pk %}" class="btn btn-outline-primary w-100">View Details</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <i class="bi bi-inbox"></i>
+          <h4>No bookings found</h4>
+          <p class="text-muted">We couldn't find any bookings with this phone number.</p>
+          <a href="{% url 'cars:car_list' %}" class="btn btn-primary btn-pill mt-2">Browse Cars</a>
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

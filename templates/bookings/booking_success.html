@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="section-pad" style="min-height:70vh;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        <div class="form-card text-center">
+          <div class="mb-4">
+            <i class="bi bi-check-circle-fill text-success" style="font-size:4.5rem;"></i>
+          </div>
+          <h2 class="section-heading">Booking Request Submitted!</h2>
+          <p class="text-muted mb-4">
+            Thank you, {{ booking.customer_name }}. Your booking request for the
+            <strong>{{ booking.car.full_name }}</strong> has been received and is currently
+            <span class="badge-status badge-pending"><i class="bi bi-hourglass-split"></i> Pending Approval</span>.
+            Our team will contact you shortly at {{ booking.phone_number }} to confirm.
+          </p>
+
+          <div class="row text-start g-3 mb-4">
+            <div class="col-md-6">
+              <div class="card-tsd p-3">
+                <div class="text-muted small">Booking ID</div>
+                <strong>#{{ booking.pk }}</strong>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card-tsd p-3">
+                <div class="text-muted small">Total Days</div>
+                <strong>{{ booking.total_days }} day{{ booking.total_days|pluralize }}</strong>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card-tsd p-3">
+                <div class="text-muted small">Pickup</div>
+                <strong>{{ booking.pickup_date }} at {{ booking.pickup_time }}</strong>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card-tsd p-3">
+                <div class="text-muted small">Return</div>
+                <strong>{{ booking.return_date }} at {{ booking.return_time }}</strong>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="card-tsd p-3 bg-light-blue">
+                <div class="text-muted small">Estimated Total Price</div>
+                <strong class="price-tag fs-4">₹{{ booking.total_price|floatformat:0 }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="{% url 'bookings:booking_status' booking.pk %}" class="btn btn-primary btn-pill">
+              <i class="bi bi-eye"></i> Track Booking Status
+            </a>
+            <a href="{% url 'cars:car_list' %}" class="btn btn-outline-primary btn-pill">
+              <i class="bi bi-car-front"></i> Browse More Cars
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

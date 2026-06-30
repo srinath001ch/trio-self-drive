@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page-header">
+  <div class="container">
+    <h1>About Trio Self Drive</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-tsd mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">About</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6">
+        <span class="section-eyebrow"><i class="bi bi-building"></i> Our Story</span>
+        <h2 class="section-heading">Freedom to Drive, Built on Trust</h2>
+        <div class="road-divider"></div>
+        <p class="text-muted">
+          Trio Self Drive was founded with one simple idea: car rentals should be easy, affordable,
+          and free of unnecessary hassle. We are a self drive car rental service, which means you get
+          behind the wheel yourself — no drivers, no waiting, just you and the open road.
+        </p>
+        <p class="text-muted">
+          Our fleet is carefully maintained and inspected regularly so that every customer enjoys a safe
+          and comfortable ride. Whether you need a car for a weekend getaway, a business trip, or daily
+          commuting, we have a vehicle that fits your needs and your budget.
+        </p>
+        <p class="text-muted mb-4">
+          With transparent pricing, a simple booking process, and dedicated customer support, Trio Self
+          Drive has become a trusted name for self drive car rentals.
+        </p>
+        <a href="tel:+91{{ BUSINESS_PHONE }}" class="btn btn-primary btn-lg btn-pill">
+          <i class="bi bi-telephone-fill"></i> Call Us: {{ BUSINESS_PHONE_DISPLAY }}
+        </a>
+      </div>
+      <div class="col-lg-6">
+        <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=900&q=80"
+             alt="Trio Self Drive fleet" class="img-fluid rounded-tsd shadow-tsd">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad bg-light-blue">
+  <div class="container">
+    <div class="row g-4 text-center">
+      <div class="col-md-3 col-6">
+        <div class="card-tsd p-4">
+          <i class="bi bi-car-front-fill text-tsd-blue fs-1 mb-2"></i>
+          <h3 class="mb-0">{{ "50+" }}</h3>
+          <p class="text-muted mb-0">Cars in Fleet</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="card-tsd p-4">
+          <i class="bi bi-people-fill text-tsd-blue fs-1 mb-2"></i>
+          <h3 class="mb-0">5000+</h3>
+          <p class="text-muted mb-0">Happy Customers</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="card-tsd p-4">
+          <i class="bi bi-geo-alt-fill text-tsd-blue fs-1 mb-2"></i>
+          <h3 class="mb-0">10+</h3>
+          <p class="text-muted mb-0">Pickup Locations</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="card-tsd p-4">
+          <i class="bi bi-emoji-smile-fill text-tsd-blue fs-1 mb-2"></i>
+          <h3 class="mb-0">4.8/5</h3>
+          <p class="text-muted mb-0">Average Rating</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="text-center mx-auto" style="max-width:680px;">
+      <span class="section-eyebrow"><i class="bi bi-bullseye"></i> Our Mission</span>
+      <h2 class="section-heading">Driving Convenience Forward</h2>
+      <div class="road-divider mx-auto"></div>
+      <p class="section-subtext mx-auto">
+        We aim to make self drive car rentals accessible to everyone — reliable vehicles, honest pricing,
+        and a booking process that respects your time.
+      </p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
