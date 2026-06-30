@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'core',
     'cars',
     'bookings',
-    'dashboard',
+    'dashboard.apps.DashboardConfig',
 ]
 
 MIDDLEWARE = [
