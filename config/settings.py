@@ -155,7 +155,7 @@ from django.contrib.messages import constants as messages_constants
 MESSAGE_TAGS = {
     messages_constants.ERROR: 'danger',
 }
-import os
+
 import cloudinary
 
 cloudinary.config(
