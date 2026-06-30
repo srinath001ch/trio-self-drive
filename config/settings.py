@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'cars',
     'bookings',
     'dashboard',
+    "cloudinary",
+    "cloudinary_storage",
 ]
 
 MIDDLEWARE = [
@@ -153,3 +155,13 @@ from django.contrib.messages import constants as messages_constants
 MESSAGE_TAGS = {
     messages_constants.ERROR: 'danger',
 }
+import os
+import cloudinary
+
+cloudinary.config(
+    cloud_name="eh9au0lu",
+    api_key="659273258344362",
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+)
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
