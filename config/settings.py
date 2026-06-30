@@ -156,13 +156,11 @@ MESSAGE_TAGS = {
     messages_constants.ERROR: 'danger',
 }
 
-import cloudinary
-
-cloudinary.config(
-    cloud_name="eh9au0lu",
-    api_key="659273258344362",
-    api_secret=os.environ.get("PRNtDHha-8OzKhrb7f4gZbNtkUo"),
-)
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": "eh9au0lu",
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
+}
 
 STORAGES = {
     "default": {
